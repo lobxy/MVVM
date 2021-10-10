@@ -5,8 +5,9 @@
       <map>
         <entry key="app/src/main/res/drawable/ic_baseline_delete_24.xml" value="0.26979166666666665" />
         <entry key="app/src/main/res/drawable/ic_baseline_edit_24.xml" value="0.26979166666666665" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.2" />
-        <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.1259259259259259" />
+        <entry key="app/src/main/res/drawable/ic_baseline_person_add_24.xml" value="0.26979166666666665" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_splash.xml" value="0.25364583333333335" />
         <entry key="app/src/main/res/layout/inner_user_data.xml" value="0.33" />
       </map>

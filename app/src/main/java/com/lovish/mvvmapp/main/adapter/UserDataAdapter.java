@@ -42,6 +42,11 @@ public class UserDataAdapter extends RecyclerView.Adapter<UserDataAdapter.ViewHo
         return userDataList.size();
     }
 
+    public void updateList(List<UserData> userDataList) {
+        this.userDataList = userDataList;
+        notifyDataSetChanged();
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private IUserAdapterClickEvents adapterClickEvents;
@@ -67,11 +72,11 @@ public class UserDataAdapter extends RecyclerView.Adapter<UserDataAdapter.ViewHo
         public class ClickAction {
 
             public void editClickAction(View view) {
-                if (adapterClickEvents != null) adapterClickEvents.editClickAction(getAdapterPosition());
+                if (adapterClickEvents != null) adapterClickEvents.editClickAction(view, getAdapterPosition());
             }
 
             public void deleteClickAction(View view) {
-                if (adapterClickEvents != null) adapterClickEvents.deleteClickAction(getAdapterPosition());
+                if (adapterClickEvents != null) adapterClickEvents.deleteClickAction(view, getAdapterPosition());
             }
 
         }

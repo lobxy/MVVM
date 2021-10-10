@@ -1,9 +1,10 @@
 package com.lovish.mvvmapp.main.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
@@ -15,8 +16,8 @@ import com.lovish.mvvmapp.main.adapter.IUserAdapterClickEvents;
 import com.lovish.mvvmapp.main.adapter.UserDataAdapter;
 import com.lovish.mvvmapp.main.model.UserData;
 import com.lovish.mvvmapp.main.view_models.ViewModelActivityMain;
+import com.lovish.mvvmapp.sign_up.SignUpActivity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements IUserAdapterClickEvents {
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements IUserAdapterClick
     private static final String TAG = "MainActivity";
     private ActivityMainBinding binding;
     private ViewModelActivityMain viewModel;
+    private UserDataAdapter userDataAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,65 +42,72 @@ public class MainActivity extends AppCompatActivity implements IUserAdapterClick
 
     private void setViewModels() {
         viewModel = new ViewModelProvider(this).get(ViewModelActivityMain.class);
-        viewModel.dataSize.observe(this, new Observer<Integer>() {
+
+        viewModel.userDataList.observe(this, new Observer<List<UserData>>() {
             @Override
-            public void onChanged(Integer integer) {
-                if (integer == 0) {
+            public void onChanged(List<UserData> userData) {
+                if (userData.isEmpty()) {
                     showNoDataFound(true);
                 } else {
                     showNoDataFound(false);
-                    initRecyclerView();
+                    initRecyclerView(userData);
                 }
             }
         });
+
+        viewModel.initialiseData();
     }
 
     private void showNoDataFound(boolean showData) {
         if (showData) {
             binding.idAddData.setVisibility(View.VISIBLE);
             binding.textView2.setVisibility(View.VISIBLE);
+            binding.floatingActionButton.hide();
             binding.idRecyclerView.setVisibility(View.GONE);
         } else {
             binding.idAddData.setVisibility(View.GONE);
             binding.textView2.setVisibility(View.GONE);
+            binding.floatingActionButton.show();
             binding.idRecyclerView.setVisibility(View.VISIBLE);
         }
     }
 
-    private void initRecyclerView() {
-        List<UserData> userData = new ArrayList<>();
-        userData.add(new UserData(1, "Lovish", ""));
-        userData.add(new UserData(2, "Lovish1", ""));
-        userData.add(new UserData(3, "Lovish2", ""));
-        userData.add(new UserData(4, "Lovish3", ""));
-        userData.add(new UserData(5, "Lovish4", ""));
-        userData.add(new UserData(6, "Lovish5", ""));
+    private void initRecyclerView(List<UserData> userData) {
+        if (userDataAdapter == null) {
+            userDataAdapter = new UserDataAdapter(userData, this);
+            binding.idRecyclerView.setAdapter(userDataAdapter);
+        } else {
+            userDataAdapter.updateList(userData);
+        }
 
-        UserDataAdapter userDataAdapter = new UserDataAdapter(userData, this);
-
-        binding.idRecyclerView.setAdapter(userDataAdapter);
     }
 
     @Override
-    public void editClickAction(int position) {
-        Toast.makeText(this, "edit clicked: " + position, Toast.LENGTH_SHORT).show();
+    public void editClickAction(View view, int position) {
+        Intent intent = new Intent(view.getContext(), SignUpActivity.class);
+        if (position != -1) {
+            intent.putExtra("data", viewModel.getUserData(position));
+        }
+        intent.putExtra("dataSize", userDataAdapter.getItemCount() + 1);
+        startActivityForResult(intent, 121);
     }
 
     @Override
-    public void deleteClickAction(int position) {
-        Toast.makeText(this, "delete clicked: " + position, Toast.LENGTH_SHORT).show();
+    public void deleteClickAction(View view, int position) {
+        viewModel.deleteUserData(position);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        viewModel.onActivityResult(requestCode, resultCode, data);
+
     }
 
     public class ClickAction {
 
         public void addUserButtonClicked(View view) {
-            viewModel.dataSize.postValue(0);
-//            Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
-//            startActivity(intent);
-        }
-
-        public void userDataChanged(View view) {
-            viewModel.dataSize.postValue(1);
+            editClickAction(view, -1);
         }
 
     }
