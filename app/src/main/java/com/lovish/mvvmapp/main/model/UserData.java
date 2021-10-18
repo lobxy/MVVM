@@ -1,9 +1,21 @@
 package com.lovish.mvvmapp.main.model;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class UserData implements Serializable {
+public class UserData implements Parcelable {
 
+    public static final Creator<UserData> CREATOR = new Creator<UserData>() {
+        @Override
+        public UserData createFromParcel(Parcel in) {
+            return new UserData(in);
+        }
+
+        @Override
+        public UserData[] newArray(int size) {
+            return new UserData[size];
+        }
+    };
     private int id;
     private String name;
     private String image;
@@ -19,7 +31,15 @@ public class UserData implements Serializable {
     }
 
     public UserData() {
+        
+    }
 
+    protected UserData(Parcel in) {
+        id = in.readInt();
+        name = in.readString();
+        image = in.readString();
+        lastName = in.readString();
+        checked = in.readByte() != 0;
     }
 
     public String getLastName() {
@@ -60,5 +80,19 @@ public class UserData implements Serializable {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(name);
+        dest.writeString(image);
+        dest.writeString(lastName);
+        dest.writeByte((byte) (checked ? 1 : 0));
     }
 }

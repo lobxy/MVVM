@@ -12,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.lovish.mvvmapp.R;
 import com.lovish.mvvmapp.databinding.ActivitySignUpBinding;
-import com.lovish.mvvmapp.main.model.UserData;
 
 public class SignUpActivity extends AppCompatActivity {
 

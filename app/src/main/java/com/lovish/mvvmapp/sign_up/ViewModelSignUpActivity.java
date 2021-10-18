@@ -32,8 +32,8 @@ public class ViewModelSignUpActivity extends ViewModel {
     }
 
     public void prePopulateData(Intent data) {
-        if (data != null && data.getSerializableExtra("data") != null) {
-            userData = (UserData) data.getSerializableExtra("data");
+        if (data != null && data.getParcelableExtra("data") != null) {
+            userData = data.getParcelableExtra("data");
         } else {
             userData.setId(data.getIntExtra("dataSize", -1));
         }
